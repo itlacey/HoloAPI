@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from .models.items import Item
 
 app = FastAPI()
 
