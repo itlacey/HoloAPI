@@ -1,12 +1,26 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
+from models.love_note import LoveNote
 
 app = FastAPI()
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+love_note = LoveNote()
 
+templates = Jinja2Templates(directory="./templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def get_form(request: Request):
+    return templates.TemplateResponse("form.html", {"request": request, "message": love_note.message})
+
+@app.post("/save-note")
+async def save_note(
+    message: str = Form(...)
+):
+    love_note.message = message
+    return {"message": "Note saved successfully"}
 
 @app.get("/love-note")
-async def root():
-    return {"message": "This is from the HoloAPI, and should be picked up!!!"}
+async def get_love_note():
+    return {"message": love_note.message}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Love Note</title>
+    <script>
+        async function saveNote(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: formData
+            });
+            const result = await response.json();
+            alert(result.message);
+        }
+    </script>
+</head>
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <form action="/save-note" method="post" onsubmit="saveNote(event)">
+            <textarea name="message" rows="4" cols="50">{{ message }}</textarea>
+            <br>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</body>
+</html>
