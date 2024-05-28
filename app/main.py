@@ -2,13 +2,13 @@ from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
-from models.love_note import LoveNote
+from .models.love_note import LoveNote
 
 app = FastAPI()
 
 love_note = LoveNote()
 
-templates = Jinja2Templates(directory="./templates")
+templates = Jinja2Templates(directory="./app/templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def get_form(request: Request):
