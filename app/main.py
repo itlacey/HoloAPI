@@ -5,11 +5,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette.middleware.sessions import SessionMiddleware
 from .models.love_note import LoveNote
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import os
 
-# Load environment variables from .env file
-load_dotenv()
+if not os.getenv("SECRET_KEY") or not os.getenv("USER_PASSWORD") or not os.getenv("USER_NAME"):
+    # Load environment variables from .env file if they are not set
+    load_dotenv(find_dotenv())
 
 # Access environment variables
 secret_key = os.getenv("SECRET_KEY")
