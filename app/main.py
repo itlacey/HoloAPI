@@ -1,21 +1,24 @@
-from fastapi import FastAPI, Form, Request, Depends
+import os
+from dotenv import load_dotenv, find_dotenv
+from fastapi import FastAPI, Form, Request, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette.middleware.sessions import SessionMiddleware
 from .models.love_note import LoveNote
-from dotenv import load_dotenv, find_dotenv
-import os
 
+# Load environment variables from .env file if they are not set
 if not os.getenv("SECRET_KEY") or not os.getenv("USER_PASSWORD") or not os.getenv("USER_NAME"):
-    # Load environment variables from .env file if they are not set
     load_dotenv(find_dotenv())
 
 # Access environment variables
 secret_key = os.getenv("SECRET_KEY")
 user_password = os.getenv("USER_PASSWORD")
 user_name = os.getenv("USER_NAME")
+
+# Ensure the secret key, username, and password are set
+if not secret_key or not user_password or not user_name:
+    raise HTTPException(status_code=500, detail="Environment variables for secret key, user name, and user password must be set")
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -32,11 +35,9 @@ fake_users_db = {
     }
 }
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 def authenticate_user(username: str, password: str):
-    user = fake_users_db.get(username)
-    if not user or user["password"] != password:
+    user = fake_users_db["user"]
+    if user["username"] != username or user["password"] != password:
         return False
     return True
 
